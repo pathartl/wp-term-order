@@ -107,6 +107,9 @@ final class WP_Term_Order {
 			add_action( 'admin_init',         array( $this, 'admin_init' ) );
 			add_action( 'load-edit-tags.php', array( $this, 'edit_tags'  ) );
 		}
+
+		// Integrate with WP API
+		add_filter( 'json_prepare_term', array( $this, 'term_order_wp_api' ), 10, 2 );
 	}
 
 	/**
@@ -463,6 +466,23 @@ final class WP_Term_Order {
 		</fieldset>
 
 		<?php
+	}
+
+	/**
+	 * Add the 'order' data to the term in the WP API
+	 *
+	 * @since 0.1.1
+	 *
+	 * @param object $data
+	 * @param object $term
+	 */
+	public function term_order_wp_api( $data, $term ) {
+
+	    if ( isset( $term->order) ) {
+	        $data['order'] = $term->order;
+	    }
+
+	    return $data;
 	}
 
 	/** Query Filters *********************************************************/
